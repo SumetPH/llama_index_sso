@@ -5,9 +5,14 @@ class ChatPayload(BaseModel):
     chat_id: str
     question: str
 
-def langchain_api(app):
-    chat = chat_graph()
+chat = chat_graph()
 
+def langchain_chat(chat_id: str, question: str):
+    config = {'configurable': {'thread_id': chat_id}}
+    result = chat.invoke({'messages': question}, config)
+    return result['messages'][-1].content
+
+def langchain_api(app):
     @app.post('/langchain/chat')
     def langchain_chat(payload: ChatPayload):
         config = {'configurable': {'thread_id': payload.chat_id}}
