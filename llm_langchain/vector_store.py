@@ -1,13 +1,11 @@
 import os
-from langchain_unstructured import UnstructuredLoader
 from langchain_community.document_loaders import UnstructuredMarkdownLoader
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain_core.documents import Document
 from pythainlp.tokenize import word_tokenize
+from llm_langchain.model import huggingface_embedding
 
 vector_store_path = "llm_langchain/vector_db"
-embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-large")
+embeddings = huggingface_embedding()
 
 def custom_tokenizer(text):
     return "".join(word_tokenize(text, engine="newmm"))
