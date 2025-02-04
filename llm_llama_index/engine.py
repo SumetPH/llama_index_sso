@@ -1,6 +1,6 @@
-from llm.vector_store import load_vector_store
-from llm.model import google_gemini
-from llm.prompt import system_prompt
+from llm_llama_index.vector_store import load_vector_store
+from llm_llama_index.model import google_gemini
+from llm_llama_index.prompt import system_prompt
 from llama_index.core.memory import ChatMemoryBuffer
 
 chat_sessions = {}
@@ -9,7 +9,7 @@ def chat_engine_context(chat_id: str):
     if chat_id not in chat_sessions:
         chat_sessions[chat_id] = ChatMemoryBuffer.from_defaults(
             chat_store_key=chat_id,
-            token_limit=10000
+            token_limit=5000
         )
 
     index = load_vector_store()
