@@ -15,6 +15,9 @@ def langchain_chat(chat_id: str, question: str):
 def langchain_api(app):
     @app.post('/langchain/chat')
     def langchain_chat(payload: ChatPayload):
-        config = {'configurable': {'thread_id': payload.chat_id}}
-        result = chat.invoke({'messages': payload.question}, config)
-        return result['messages'][-1]
+        try:
+            config = {'configurable': {'thread_id': payload.chat_id}}
+            result = chat.invoke({'messages': payload.question}, config)
+            return result['messages'][-1]
+        except Exception as e:
+            return str(e)

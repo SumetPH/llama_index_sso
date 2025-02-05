@@ -7,11 +7,9 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph.message import add_messages
 from typing_extensions import Annotated, TypedDict
 from typing import Sequence
-
 class State(TypedDict):
     messages: Annotated[Sequence[BaseMessage], add_messages]
     context: str
-
 
 def model(state: State):
     trimmer = trim_messages(
@@ -45,10 +43,6 @@ def model(state: State):
                     "\n\n{context}\n\n"
                 )
             ),
-            # (
-            #     "human",
-            #     "{context}"
-            # ),
             MessagesPlaceholder(variable_name="messages"),
         ],
     )
@@ -59,7 +53,8 @@ def model(state: State):
 
     llm = google_gemini()
     response = llm.invoke(prompt)
-
+    # response[-1].pretty_print()
+    
     return {"messages": response}
 
 def chat_graph():

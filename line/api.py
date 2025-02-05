@@ -18,21 +18,23 @@ class LineWebhook(TypedDict):
     events: List[LineWebhookEvent]
 
 def line_api(app):
-
-    @app.post("/")
+    @app.post("/line/webhook")
     async def line_webhook(payload: dict):
         body: LineWebhook = payload
-        event = body["events"][0]
 
+        if(len(body['events']) == 0):
+            return {"message": "Verify Success"}
+
+        event = body["events"][0]
         if event["message"]["type"] == "text":
-            # start loading
-            await loading(chat_id=event["source"]["userId"])
-            # ai question and answer
-            question = event["message"]["text"]
-            chat_id = event["source"]["userId"]
-            result = langchain_chat(chat_id, question)
-            # send reply to line oa
-            if result is not None:
+            try:
+                 # start loading
+                await loading(chat_id=event["source"]["userId"])
+                # ai question and answer
+                question = event["message"]["text"]
+                chat_id = event["source"]["userId"]
+                result = langchain_chat(chat_id, question)
+                # send reply to line oa
                 await reply(
                     reply_token=event["replyToken"],
                     payload=[
@@ -42,15 +44,27 @@ def line_api(app):
                         }
                     ]
                 )
-            else:
+            except Exception as e:
+                # send reply when error
+                print(e)
                 await reply(
                     reply_token=event["replyToken"],
                     payload=[
                         {
                             "type": "text",
-                            "text": 'สามารถตอบกลับได้ กรุณาลองใหม่อีกครั้ง'
+                            "text": 'ไม่สามารถตอบกลับได้ กรุณาลองใหม่อีกครั้ง'
                         }
                     ]
-                )
-            
-        return {"message": "OK"}
+                )  
+        else:
+            # send reply when message type is not text
+            await reply(
+                reply_token=event["replyToken"],
+                payload=[
+                    {
+                        "type": "text",
+                        "text": 'ระบบ ถาม-ตอบ ได้เฉพาะข้อความเท่านั้นครับ'
+                    }
+                ]
+            )
+        return {"message": "Reply Success"}

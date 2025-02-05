@@ -6,7 +6,6 @@ class ChatPayload(BaseModel):
     question: str
 
 def llama_index_api(app):
-
     @app.post('/llama-index/chat')
     def llama_index_chat(payload: ChatPayload):
         engine = chat_engine_context(chat_id=payload.chat_id)

@@ -1,5 +1,7 @@
-# from llm_langchain.vector_store import load_vector_store, create_vector_store
+# from llm_langchain.api import langchain_chat
 
-# create_vector_store()
+# chat = langchain_chat
 
-# print('done')
+# r = chat(chat_id= '1', question='สวัสดีครับ')
+
+# print(r)
